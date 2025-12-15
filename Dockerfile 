@@ -1,0 +1,14 @@
+FROM php:8.2-fpm
+
+# Instalar extensiones necesarias para MySQL/MariaDB
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# Configurar PHP-FPM para escuchar en el puerto 9000
+RUN sed -i 's/listen = . */listen = 9000/' /usr/local/etc/php-fpm.d/www.conf
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
