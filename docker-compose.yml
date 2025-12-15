@@ -1,27 +1,14 @@
 services:
-  php:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./app:/app
-    networks:
-      - app-network
-    depends_on:
-      - mariadb
-
-  apache:
-    image: httpd:2.4
+  web:
+    image: php:8.2-apache
     ports:
       - "8080:80"
-    volumes: 
-      - ./app:/app
-      - ./apache-custom/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-      - ./apache-custom/myapp.conf:/usr/local/apache2/conf/extra/myapp.conf:ro
-    depends_on: 
-      - php
-    networks: 
-      - app-network
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - mariadb
+    command: >
+      bash -c "docker-php-ext-install mysqli && apache2-foreground"
 
   mariadb:
     image: mariadb:10.6
@@ -32,32 +19,14 @@ services:
       MYSQL_PASSWORD: 1234
     volumes:
       - mariadb_data:/var/lib/mysql
-      - ./Usuarios.sql:/docker-entrypoint-initdb. d/Usuarios.sql
-    networks:
-      - app-network
-    healthcheck:
-      test:  ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval:  10s
-      timeout: 5s
-      retries: 5
+      - ./Usuarios.sql:/docker-entrypoint-initdb.d/Usuarios.sql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    ports: 
+    ports:
       - "8000:80"
     environment:
       PMA_HOST: mariadb
-      PMA_USER: user
-      PMA_PASSWORD: 1234
-    depends_on:
-      mariadb: 
-        condition: service_healthy
-    networks:
-      - app-network
 
 volumes:
   mariadb_data:
-
-networks: 
-  app-network:
-    driver: bridge
