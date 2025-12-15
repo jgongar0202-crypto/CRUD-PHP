@@ -32,7 +32,7 @@
 
 | Campo   | Valor                |
 |---------|----------------------|
-| Email   | admin@example.com    |
+| nombre  | admin                |
 | Password| admin                |
 
 Puedes encontrar (y modificar) más usuarios en el archivo [`Usuarios.sql`](./Usuarios.sql).
@@ -45,7 +45,6 @@ Puedes encontrar (y modificar) más usuarios en el archivo [`Usuarios.sql`](./Us
 |-----------|---------|
 | Usuario   | root    |
 | Password  | 1234    |
-| Base de datos | PHP |
 
 _También puedes acceder con el usuario_ **user** _y contraseña_ **1234**.
 
